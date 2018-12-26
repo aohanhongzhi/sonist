@@ -13,6 +13,7 @@ import Api from '/js/api.js'
 
 import Artist from '/js/modules/artist.js'
 import Local from '/js/modules/local.js'
+import Profile from '/js/modules/profile.js'
 
 const log = console.log
 
@@ -182,6 +183,9 @@ Anot({
           break
         case 'local':
           Local.__init__()
+          break
+        case 'profile':
+          Profile.__init__()
           break
         default:
           break

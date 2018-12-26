@@ -1,0 +1,43 @@
+<div class="do-mod-profile" anot="profile">
+  <h3 class="title">
+    设置
+    <span class="save do-ui-button medium teal" :click="save">保存设置</span>
+  </h3>
+
+  <section class="block">
+    <span class="label">app启动自动播放</span>
+    <div class="field">
+      <anot-switch :value="setting.autoPlay"></anot-switch>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="label">自动下载歌词和封面</span>
+    <div class="field">
+      <anot-switch :value="setting.autoLrc"></anot-switch>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="label">本地音乐目录</span>
+    <div class="field">
+      <anot-input :value="setting.musicPath"></anot-input>
+      <anot-button color="teal" @click="openDir">选择目录...</anot-button>
+    </div>
+  </section>
+
+
+  <section class="block">
+    <span class="label">关于Sonist</span>
+    <div class="desc">
+      <p>当前版本:  0.0.1</p>
+      <p>Sonist是一个本地音乐播放器, 同时支持酷狗的API来获取最新的歌曲信息,如排行榜, 最近单曲等(不提供下载服务, 仅为资讯展示, 如需要下载请到酷狗官网购买下载)。</p>
+      <p>本播放器所使用的歌词/封面信息均来源于网络搜索, 不保证内容的准确性和时效性。</p>
+      <p>免责声明</p>
+      <p>本app,源代码完全开源(<a target="_blank" href="https://github.com/yutent/sonist">GayHub</a>)。采用MIT开源协议。仅供个人学习交流, 请勿用于商业/非法用途。</p>
+      <p>本app的音乐资源来源于网络, 如有侵犯您的权益, 请联系我, 我会在第一时间删除。</p>
+    </div>
+  </section>
+
+
+</div>

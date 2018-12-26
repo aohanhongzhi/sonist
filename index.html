@@ -22,7 +22,7 @@
   </nav>
 
   <nav class="menubar-win do-fn-nodrag">
-    <i class="item opt do-icon-menu-right"></i>
+    <i class="item opt do-icon-menu-right" :click="toggleModule('profile')"></i>
     <span :if="theme === 2">
       <i class="item do-icon-minimize" :click="minimize"></i>
       <i class="item do-icon-maximize" :click="maximize"></i>
