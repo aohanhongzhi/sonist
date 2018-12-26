@@ -19,6 +19,14 @@
   </section>
 
   <section class="block">
+    <span class="label">主题风格</span>
+    <div class="field">
+      <anot-radio :value="setting.theme" label="1">MacOS风格</anot-radio>
+      <anot-radio :value="setting.theme" label="2">Deepin风格</anot-radio>
+    </div>
+  </section>
+
+  <section class="block">
     <span class="label">本地音乐目录</span>
     <div class="field">
       <anot-input :value="setting.musicPath"></anot-input>

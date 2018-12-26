@@ -26,11 +26,20 @@ export default Anot({
     setting: {
       autoPlay: appInit.autoPlay,
       autoLrc: appInit.autoLrc,
+      theme: appInit.theme || 1,
       musicPath: appInit.musicPath
     }
   },
+  watch: {
+    'setting.theme'(v) {
+      v = +v
+      this.__APP__.theme = v
+    }
+  },
   methods: {
-    __init__() {},
+    __init__() {
+      this.__APP__ = Anot.vmodels.app
+    },
     openDir() {
       dialog.showOpenDialog(
         {
