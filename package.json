@@ -7,7 +7,7 @@
     "start": "electron ."
   },
   "author": "yutent",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "crypto.js": "^1.1.6",
     "iofs": "^1.1.0"
