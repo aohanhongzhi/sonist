@@ -1,0 +1,150 @@
+@charset "UTF-8";
+/**
+ * 各模块的样式
+ * @authors yutent<yutent@doui.cc>
+ * @date 2018/12/24 17:11:35
+ */
+
+@import "./var.scss";
+
+
+// 歌手模块
+.do-mod-artist {position:relative;display:flex;width:100%;height:100%;
+
+  .filter-box  {flex:0 1 12rem;border-right:.1rem solid  nth($cp, 1);text-align:right;
+  
+    .item {width:100%;height:2.4rem;padding:0 1.2rem;line-height:2.4rem;color:nth($cgr, 1);
+      
+      &.active {color:nth($ct,1);font-weight:bold}
+      &:hover {padding-right:1.3rem;color:nth($ct,1);}
+    }
+    .pipe {display:block;width:100%;height:.7rem;}
+  
+  }
+
+  .list-box  {overflow-y:auto;display:flex;flex-flow:row wrap;flex:1;padding:0 1rem;
+  
+    .item  {display:flex;justify-content:center;align-items:center;flex:45%;height:7rem;margin:1rem 2.5%;padding:.5rem;background:nth($cp, 1);
+      img {flex:0 1 6rem;height:6rem}
+      summary {flex:2;padding:0 1rem;}
+      strong {font-size:1.6rem}
+      p {font-size:1.2rem;color:nth($cgr, 1)}
+    }
+  
+  }
+
+  /* ------------------------------------------------------------ */
+  /* --------------------    歌手&专辑样式     -------------------- */
+  /* ------------------------------------------------------------ */
+
+
+  .artist-box  {
+    position:absolute;left:0;top:0;z-index:9;width:100%;height:100%;
+    background-size:cover;background-repeat:no-repeat;background-position:center center;
+
+    .content {display:flex;flex-flow:column wrap;width:100%;height:100%;padding:1.5rem 2.5rem;background:linear-gradient(to bottom,#fff 2%, rgba(255, 255, 255, .75), #fff 98%);backdrop-filter:blur(1rem);
+
+      
+      .name {flex:0 1 3.6rem;font-size:1.4rem;font-style:italic;font-weight:normal;
+        a {text-decoration:underline;color:nth($ct, 1)}
+        i {color:nth($cgr, 1)}
+      }
+      .desc {flex:0 1 3rem; font-size:1.2rem;color:nth($cgr, 1);
+        span {padding:0 .5rem;text-decoration:underline;color:nth($ct, 1)}
+      }
+    
+      .song-album {flex:1;display:flex;flex-flow:column wrap;}
+      .tab {flex:0 1  3rem;display:flex;padding:0 .5rem;line-height:2.9rem;border-bottom:.1rem solid nth($cp, 2);text-align:center;
+  
+        .item {flex:0 0 7.5rem;height:3rem;margin:0 .3rem;
+        
+          &.active {border-bottom:.2rem solid nth($ct, 1);color:nth($ct, 1);}
+          &.disabled {opacity:.25}
+        }
+      }
+    
+    }
+  }
+
+
+}
+
+
+
+// 本地音乐模块
+.do-mod-local {flex:1;display:flex;flex-flow:column wrap;
+    
+  .toolbar {flex:0 1  3rem;padding:0 1rem;line-height:2.9rem;border-bottom:.1rem solid nth($cp, 2);
+  
+    .refresh {margin-left:1rem;color:nth($ct, 1);text-decoration:underline;}
+  }
+
+  .table {overflow:auto;flex:1;
+
+    .stat {width:2.6rem;height:2.6rem;line-height:2.6rem;}
+    .ac {text-align:center}
+
+    .active {color:nth($ct, 1);
+      
+      i {animation: play 2s infinite linear;}
+    }
+  }
+
+
+}
+
+
+
+// 搜索&试听模块
+.do-mod-search {flex:1;display:flex;flex-flow:column wrap;
+    
+  .tabbar {flex:0 1  3rem;display:flex;padding:0 .5rem;line-height:2.9rem;border-bottom:.1rem solid nth($cp, 2);text-align:center;
+  
+    .item {flex:0 0 7.5rem;height:3rem;margin:0 .3rem;border:.1rem solid nth($cp, 2);background:#fff;color:nth($cp, 3);
+    
+      &.active {border-bottom-color:transparent;color:nth($cd, 1);}
+      i {color:nth($cr, 1)}
+    }
+  }
+
+  .table {overflow:auto;flex:1;
+
+    .active {color:nth($ct, 1)}
+    .ac {text-align:center}
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.artist-desc-layer {width:60rem;height:30rem;
+
+  .layer-content {overflow-y:auto;height:85%!important;padding:1rem;line-height:2;text-indent:2em;}
+}
+
+
+
+

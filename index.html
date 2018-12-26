@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<link href="dist/css/reset-basic.css" rel="stylesheet">
+<link href="dist/css/elem-ui.css" rel="stylesheet">
+<link href="css/app.css" rel="stylesheet">
+<link href="css/modules.css" rel="stylesheet">
+<script>window.LIBS_BASE_URL = location.origin + '/dist'</script>
+<script type="module" src="js/app.js"></script>
+</head>
+<body class="do-fn-noselect">
+
+<div class="do-mod-app" anot="app">
+
+  <nav class="menubar do-fn-nodrag" :if="theme === 1" :class="{focus: winFocus}">
+    <i class="item quit" :click="quit(false)"></i>
+    <i class="item min" :click="minimize"></i>
+    <i class="item max" :click="maximize"></i>
+  </nav>
+
+  <nav class="menubar-win do-fn-nodrag">
+    <i class="item opt do-icon-menu-right"></i>
+    <span :if="theme === 2">
+      <i class="item do-icon-minimize" :click="minimize"></i>
+      <i class="item do-icon-maximize" :click="maximize"></i>
+      <i class="item do-icon-close" :click="quit(false)"></i>
+    </span>
+  </nav>
+
+
+
+  <aside class="sidebar do-fn-drag">
+  
+    <div class="user-box">
+      <div class="avatar">
+        <img src="/images/avatar.jpg" alt="yutent">
+      </div>
+      <h2 class="uname">yutent</h2>
+    </div>
+
+    <dl class="music-box">
+      <dt class="title">酷狗在线</dt>
+      <dd class="item disabled" 
+        :click="toggleModule('radio')"
+        :class="{active: mod === 'radio'}">
+        <i class="s-icon-radio"></i> 音乐电台
+      </dd>
+      <dd class="item" 
+        :click="toggleModule('rank')"
+        :class="{active: mod === 'rank'}">
+        <i class="s-icon-rank"></i> 排行榜
+      </dd>
+      <dd class="item" 
+        :click="toggleModule('artist')"
+        :class="{active: mod === 'artist'}">
+        <i class="s-icon-singer"></i> 歌手
+      </dd>
+      <dd class="item disabled" 
+        :click="toggleModule('mv')"
+        :class="{active: mod === 'mv'}">
+        <i class="s-icon-mv"></i> MV
+      </dd>
+
+      <dt class="title">我的音乐</dt>
+      <dd class="item" 
+        :click="toggleModule('search')"
+        :class="{active: mod === 'search'}">
+        <i class="s-icon-heart"></i> 试听列表
+      </dd>
+      <dd class="item" 
+        :click="toggleModule('local')"
+        :class="{active: mod === 'local'}">
+        <i class="s-icon-play-list"></i> 本地音乐
+      </dd>
+    </dl>
+
+    <div class="play-contrl">
+      <span class="item prev s-icon-prev" :click="nextSong(-1)"></span>
+      <span 
+        class="item play"
+        :class="{'s-icon-play': !isPlaying, 's-icon-pause': isPlaying}" 
+        :click="play(null)">
+      </span>
+      <span class="item next s-icon-next" :click="nextSong(1)"></span>
+    </div>
+
+  </aside>
+
+
+  <div class="main">
+
+    <div class="tool-bar do-fn-drag">
+      <div class="search do-fn-nodrag">
+        <input class="do-ui-input" value="">
+        <i class="icon do-icon-search"></i>
+      </div>
+    </div>
+
+    
+
+    <content class="module" :include="views" data-cache="true"></content>
+
+      
+
+
+    <div class="play-bar">
+      <div class="song-stat">
+        <canvas ref="player"></canvas>
+      </div>
+      <span 
+        class="ctrl"
+        :class="{
+          's-icon-all': playMode === 0,
+          's-icon-single': playMode === 1,
+          's-icon-random': playMode === 2
+        }"
+        :click="togglePlayMode">
+      </span>
+      <span class="ctrl do-icon-unmute"></span>
+      <span class="ctrl s-icon-eq"></span>
+      <span class="ctrl lrc">词</span>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
