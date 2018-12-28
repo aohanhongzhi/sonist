@@ -116,10 +116,12 @@ export default Anot({
       }
     },
 
-    __checkSong__() {
+    __checkSong__(el) {
       let song = this.__LIST__.pop()
 
       if (!song) {
+        el.textContent = '重新扫描'
+        el = null
         if (this.__NEW_NUM__ > 0) {
           dbCache = LS.getAll()
           this.list.clear()
@@ -139,11 +141,11 @@ export default Anot({
       Anot.nextTick(() => {
         let name = path.basename(song)
         if (name.startsWith('.')) {
-          return this.__checkSong__()
+          return this.__checkSong__(el)
         }
         let hash = crypto.md5Sign(song)
         if (LS.get(hash)) {
-          return this.__checkSong__()
+          return this.__checkSong__(el)
         }
         this.__NEW_NUM__++
         ID3(song).then(tag => {
@@ -155,11 +157,11 @@ export default Anot({
             path: `file://${song}`,
             duration: tag.duration
           })
-          this.__checkSong__()
+          this.__checkSong__(el)
         })
       })
     },
-    refresh() {
+    refresh(ev) {
       if (this.__load__) {
         return
       }
@@ -167,7 +169,8 @@ export default Anot({
         this.__load__ = layer.load(4)
         this.__LIST__ = fs.ls('/Volumes/extends/music')
         this.__NEW_NUM__ = 0
-        this.__checkSong__()
+        ev.target.textContent = '正在扫描, 请稍候...'
+        this.__checkSong__(ev.target)
       }
     }
   }
