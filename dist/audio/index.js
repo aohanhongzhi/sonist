@@ -14,8 +14,8 @@ class AudioPlayer {
   constructor() {
     this.__PLAYER__ = new Audio()
     this.__IS_PLAYED__ = false
-    this.__LIST__ = [] // 播放列表
     this.__CURR__ = -1 // 当前播放的歌曲的id
+    this.__LIST__ = [] //播放列表
     this.__PLAY_MODE__ = 'all' // all | single | random
     this.__PLAYER__.volume = 0.7
 
@@ -176,18 +176,17 @@ util.inherits(AudioPlayer, EventEmitter)
 export const ID3 = song => {
   let cmd = `ffprobe -v quiet -print_format json -show_entries format "${song}"`
   let pc = exec(cmd)
-  let buf = []
+  let buf = ''
   return new Promise((resolve, reject) => {
     pc.stdout.on('data', _ => {
-      buf.push(_)
+      buf += _
     })
 
     pc.stderr.on('data', reject)
 
     pc.stdout.on('close', _ => {
-      let { format } = Buffer.from(buf)
       try {
-        res = JSON.parse(res)
+        let { format } = JSON.parse(buf)
         resolve({
           title: format.tags.TITLE || format.tags.title,
           album: format.tags.ALBUM || format.tags.album,

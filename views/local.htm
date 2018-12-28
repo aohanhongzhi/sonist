@@ -18,6 +18,7 @@
         <tr
           :class="{active: it.id === curr}"
           :for="it in list"
+          :on-contextmenu="handleMenu(it, $index, $event)"
           :dblclick="play(it, $index)">
           <td class="ac"><i class="stat s-icon-music"></i></td>
           <td :text="it.title"></td>
@@ -27,5 +28,34 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="edit-form" :if="editMode">
+    <div class="form">
+      <section class="section title">
+        歌曲信息编辑
+        <i class="do-icon-close" :click="closeEdit"></i>
+      </section>
+
+      <section class="section">
+        <span class="field" :text="form.path"></span>
+      </section>
+
+      <section class="section">
+          <span class="label">标题</span>
+          <input class="field do-ui-input" :duplex="form.title">
+        </section>
+      
+      <section class="section">
+        <span class="label">歌手</span>
+        <input class="field do-ui-input" :duplex="form.artist">
+      </section>
+
+      <section class="section">
+        <span class="label">专辑</span>
+        <input class="field do-ui-input" :duplex="form.album">
+      </section>
+
+    </div>
   </div>
 </div>

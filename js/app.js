@@ -59,7 +59,6 @@ Anot({
     volume: Anot.ls('volume') || 70,
     curr: {
       id: '',
-      index: 0,
       title: '',
       artist: '',
       album: '',

@@ -28,7 +28,14 @@ export default Anot({
   state: {
     list: [],
     curr: '',
-    __APP__: null
+    editMode: false,
+    form: {
+      id: '',
+      title: '',
+      artist: '',
+      album: '',
+      path: ''
+    }
   },
   mounted() {
     LS.insert(dbCache)
@@ -96,6 +103,7 @@ export default Anot({
         _P.then(next => {
           if (next) {
             Api.getSongInfoByHash(it.kgHash, it.albumId).then(json => {
+              delete it.time
               it.album = json.album_name
               it.albumId = json.album_id
               it.kgHash = json.hash
@@ -104,6 +112,9 @@ export default Anot({
 
               this.list.set(idx, it)
               LS.insert(it)
+
+              SONIST.clear()
+              SONIST.push(LS.getAll())
 
               this.__APP__.updateCurr(it)
               this.__APP__.draw()
@@ -123,11 +134,14 @@ export default Anot({
         el.textContent = '重新扫描'
         el = null
         if (this.__NEW_NUM__ > 0) {
+          LS.sort('artist', true)
           dbCache = LS.getAll()
           this.list.clear()
           this.list.pushArray(dbCache)
+
           SONIST.clear()
           SONIST.push(dbCache)
+
           fs.echo(JSON.stringify(dbCache, '', 2), MUSIC_DB_PATH)
           dbCache = null
         }
@@ -172,6 +186,88 @@ export default Anot({
         ev.target.textContent = '正在扫描, 请稍候...'
         this.__checkSong__(ev.target)
       }
+    },
+    closeEdit() {
+      this.editMode = false
+      let song = this.list[this.__idx__].$model
+
+      Object.assign(song, {
+        title: this.form.title,
+        artist: this.form.artist,
+        album: this.form.album
+      })
+
+      this.list.set(this.__idx__, song)
+      delete this.__idx__
+
+      let col = new Intl.Collator('zh')
+      this.list.sort((a, b) => {
+        return col.compare(a.artist, b.artist)
+      })
+
+      LS.update(song.id, song)
+      LS.sort('artist', true)
+
+      SONIST.clear()
+      SONIST.push(LS.getAll())
+
+      fs.echo(JSON.stringify(LS.getAll(), '', 2), MUSIC_DB_PATH)
+    },
+    handleMenu(it, idx, ev) {
+      let that = this
+
+      layer.open({
+        type: 7,
+        menubar: false,
+        maskClose: true,
+        fixed: true,
+        extraClass: 'do-mod-contextmenu__fixed',
+        offset: [ev.pageY, 'auto', 'auto', ev.pageX],
+        shift: {
+          top: ev.pageY,
+          left: ev.pageX
+        },
+        content: `<ul class="do-mod-contextmenu" :click="onClick">
+          <li data-key="del"><i class="do-icon-trash"></i>删除歌曲</li>
+          <li data-key="edit"><i class="do-icon-edit"></i>编辑信息</li>
+        </ul>`,
+        onClick(ev) {
+          if (ev.currentTarget === ev.target) {
+            return
+          }
+          let target = ev.target
+          let act = null
+          if (target.nodeName === 'I') {
+            target = target.parentNode
+          }
+          act = target.dataset.key
+          this.close()
+          if (act === 'del') {
+            layer.confirm(
+              '此操作只会将当前选中的歌曲从列表中移出<br>并不会将其从硬盘中删除!',
+              `是否删除 (${it.title}) ?`,
+              function() {
+                this.close()
+                that.list.splice(idx, 1)
+                LS.remove(it.id)
+
+                SONIST.clear()
+                SONIST.push(LS.getAll())
+
+                fs.echo(JSON.stringify(LS.getAll(), '', 2), MUSIC_DB_PATH)
+              }
+            )
+          } else {
+            that.__idx__ = idx
+            that.editMode = true
+            that.form.id = it.id
+            that.form.path = it.path.slice(7)
+            that.form.title = it.title
+            that.form.artist = it.artist
+            that.form.album = it.album
+          }
+        }
+      })
     }
   }
 })
