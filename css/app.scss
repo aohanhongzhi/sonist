@@ -160,6 +160,13 @@ table {overflow:auto;display:table;width:100%;line-height:2.5rem;
         &:hover {color:nth($ct, 1)}
         &:active {color:nth($ct, 3)}
         &.lrc {margin-right:2rem;font-size:1.6rem;}
+
+        .volume-ctrl {display:none;flex-direction:column;justify-content:flex-end;position:absolute;left:.5rem;bottom:3rem;width:2.4rem;height:12rem;padding:1rem .8rem;background:#fff;border-radius:.3rem;box-shadow:0 0 1rem rgba(0, 0, 0, .1);
+        
+          em {flex:0 0;border-radius:.5rem;background:nth($ct, 1)}
+        }
+
+        &.volume:hover .volume-ctrl {display:flex}
       }
 
     }

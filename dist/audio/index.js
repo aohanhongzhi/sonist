@@ -17,7 +17,7 @@ class AudioPlayer {
     this.__LIST__ = [] // 播放列表
     this.__CURR__ = -1 // 当前播放的歌曲的id
     this.__PLAY_MODE__ = 'all' // all | single | random
-    this.__PLAYER__.valume = 0.7
+    this.__PLAYER__.volume = 0.7
 
     this.__init__()
   }
@@ -48,8 +48,8 @@ class AudioPlayer {
     return this.__PLAYER__.muted
   }
 
-  set valume(val) {
-    this.__PLAYER__.valume = val / 100
+  set volume(val) {
+    this.__PLAYER__.volume = val / 100
   }
 
   set mode(val = 'all') {

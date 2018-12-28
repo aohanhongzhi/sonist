@@ -18,7 +18,7 @@
         <tr
           :class="{active: it.id === curr}"
           :for="it in list"
-          :dblclick="play($index)">
+          :dblclick="play(it, $index)">
           <td class="ac"><i class="stat s-icon-music"></i></td>
           <td :text="it.title"></td>
           <td class="ac" :text="it.artist"></td>

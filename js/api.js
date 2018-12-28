@@ -104,5 +104,35 @@ export default {
           return JSON.parse(res.text)
         }
       })
+  },
+
+  search(keyword) {
+    return request
+      .get('https://songsearch.kugou.com/song_search_v2')
+      .send({
+        keyword,
+        platform: 'WebFilter',
+        tag: ''
+      })
+      .then(res => {
+        if (res.status === 200) {
+          return JSON.parse(res.text).data.lists
+        }
+      })
+  },
+
+  getSongInfoByHash(hash, album_id = '') {
+    return request
+      .get('https://wwwapi.kugou.com/yy')
+      .send({
+        r: 'play/getdata',
+        hash,
+        album_id
+      })
+      .then(res => {
+        if (res.status === 200) {
+          return JSON.parse(res.text).data
+        }
+      })
   }
 }

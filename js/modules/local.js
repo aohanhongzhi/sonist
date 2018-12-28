@@ -17,6 +17,7 @@ const { app, dialog } = require('electron').remote
 const log = console.log
 const HOME_PATH = app.getPath('appData')
 const MUSIC_DB_PATH = path.join(HOME_PATH, 'music.db')
+const LYRICS_PATH = path.join(HOME_PATH, 'lyrics')
 
 let appInit = {}
 let dbCache = fs.cat(MUSIC_DB_PATH)
@@ -56,14 +57,63 @@ export default Anot({
   methods: {
     __init__() {
       appInit = JSON.parse(Anot.ss('app-init'))
-      log(appInit)
     },
 
-    play(idx) {
+    play(song, idx) {
+      if (song.id === this.curr) {
+        return
+      }
       SONIST.play(idx).then(it => {
         this.__APP__.play(it)
         this.curr = it.id
+
+        this.__updateSong__(it, idx)
       })
+    },
+
+    __updateSong__(it, idx) {
+      if (!it.cover) {
+        if (idx === undefined) {
+          for (let i in this.list.$model) {
+            if (this.list[i].id === it.id) {
+              idx = i
+              break
+            }
+          }
+        }
+        let _P = Promise.resolve(true)
+        if (!it.kgHash) {
+          _P = Api.search(`${it.artist} ${it.title}`).then(list => {
+            if (list.length) {
+              let { AlbumID, FileHash } = list[0]
+              it.kgHash = FileHash
+              it.albumId = AlbumID
+              return true
+            }
+            return false
+          })
+        }
+        _P.then(next => {
+          if (next) {
+            Api.getSongInfoByHash(it.kgHash, it.albumId).then(json => {
+              it.album = json.album_name
+              it.albumId = json.album_id
+              it.kgHash = json.hash
+              it.cover = json.img
+              it.lyrics = path.join(LYRICS_PATH, `${it.id}.lrc`)
+
+              this.list.set(idx, it)
+              LS.insert(it)
+
+              this.__APP__.updateCurr(it)
+              this.__APP__.draw()
+
+              fs.echo(json.lyrics, it.lyrics)
+              fs.echo(JSON.stringify(LS.getAll(), '', 2), MUSIC_DB_PATH)
+            })
+          }
+        })
+      }
     },
 
     __checkSong__() {

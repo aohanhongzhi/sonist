@@ -25,6 +25,7 @@ const { remote } = require('electron')
 const WIN = remote.getCurrentWindow()
 const HOME_PATH = remote.app.getPath('appData')
 const APP_INI_PATH = path.join(HOME_PATH, 'app.ini')
+const LYRICS_PATH = path.join(HOME_PATH, 'lyrics')
 const PLAY_MODE = {
   0: 'all',
   1: 'single',
@@ -48,12 +49,14 @@ appInit = JSON.parse(appInit)
 Anot({
   $id: 'app',
   state: {
-    theme: 1, // 1:macos, 2: deepin
+    theme: appInit.theme || 1, // 1:macos, 2: deepin
     winFocus: false,
     mod: 'local',
     playMode: Anot.ls('play-mode') >>> 0, // 0:all | 1:single |  2:random
     isPlaying: false,
     optBoxShow: false,
+    volumeCtrlShow: false,
+    volume: Anot.ls('volume') || 70,
     curr: {
       id: '',
       index: 0,
@@ -62,10 +65,7 @@ Anot({
       album: '',
       time: 0,
       duration: 0
-    },
-
-    currTimeBar: '',
-    currTimeBarPercent: 0
+    }
   },
   skip: [],
   computed: {
@@ -77,13 +77,6 @@ Anot({
     }
   },
   watch: {
-    'curr.*'() {
-      let { time, duration } = this.curr
-      let x = time / duration
-
-      this.currTimeBar = `matrix(1, 0, 0, 1, ${x * this.__TB_WIDTH__}, 0)`
-      this.currTimeBarPercent = 100 * x + '%'
-    },
     mod(val) {
       this.activeModule(val)
     }
@@ -193,6 +186,20 @@ Anot({
       Anot.ls('play-mode', mod)
     },
 
+    // 修改音量
+    changeValume(ev) {
+      let volume = 535 - ev.pageY
+      if (volume < 0) {
+        volume = 0
+      }
+      if (volume > 100) {
+        volume = 100
+      }
+      this.volume = volume
+      SONIST.volume = volume
+      Anot.ls('volume', volume)
+    },
+
     draw() {
       let img1 = new Image()
       let img2 = new Image()
@@ -286,15 +293,12 @@ Anot({
       }
       this.isPlaying = false
       _p.then(it => {
-        this.curr = {
-          ...it,
-          time: 0,
-          cover:
-            'http://imge.kugou.com/stdmusic/480/20170906/20170906161516611883.jpg'
+        if (this.mod === 'local') {
+          Local.__updateSong__(it)
         }
         // 通知子模块歌曲已经改变
         this.$fire('child!curr', it.id)
-        this.play()
+        this.play(it)
       })
     },
 
@@ -302,16 +306,17 @@ Anot({
       this.isPlaying = false
     },
 
+    updateCurr(obj) {
+      let old = this.curr.$model
+      this.curr = Object.assign(old, obj)
+    },
+
     play(song) {
       // 有参数的,说明是播放回调通知
       // 此时仅更新播放控制条的信息即可
       if (song) {
-        this.curr = {
-          ...song,
-          time: 0,
-          cover:
-            'http://imge.kugou.com/stdmusic/480/20170906/20170906161516611883.jpg'
-        }
+        song.time = 0
+        this.updateCurr(song)
         this.isPlaying = true
       } else {
         if (SONIST.stat === 'ready') {

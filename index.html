@@ -130,7 +130,19 @@
         }"
         :click="togglePlayMode">
       </span>
-      <span class="ctrl do-icon-unmute"></span>
+      <section class="ctrl volume">
+        <i 
+          :class="{
+            'do-icon-unmute' : volume > 0,
+            'do-icon-mute' : volume === 0
+          }">
+        </i>
+        <span 
+          class="volume-ctrl" 
+          :click="changeValume">
+          <em :css="{flex: '0 ' + volume + '%'}"></em>
+        </span>
+      </section>
       <span class="ctrl s-icon-eq"></span>
       <span class="ctrl lrc">词</span>
     </div>

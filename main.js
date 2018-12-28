@@ -42,6 +42,7 @@ protocol.registerStandardSchemes(['app'], { secure: true })
 let appPath = app.getPath('appData')
 if (!fs.exists(appPath)) {
   fs.mkdir(appPath)
+  fs.mkdir(path.join(appPath, 'lyrics'))
   fs.echo('{}', path.join(appPath, 'app.ini'))
   fs.echo('[]', path.join(appPath, 'music.db'))
 }
