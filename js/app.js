@@ -168,7 +168,7 @@ Anot({
       this.optBoxShow = !this.optBoxShow
     },
     toggleModule(mod) {
-      if (['radio', 'mv'].includes(mod)) {
+      if ('mv' === mod) {
         return
       }
       this.optBoxShow = false
