@@ -115,6 +115,7 @@ Anot({
 
     // 设置循环模式
     SONIST.mode = PLAY_MODE[this.playMode]
+    SONIST.volume = this.volume
 
     SONIST.on('play', time => {
       this.curr.time = time
