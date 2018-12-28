@@ -24,7 +24,7 @@ export default Anot({
   $id: 'profile',
   state: {
     setting: {
-      autoPlay: appInit.autoPlay,
+      allowPlayOnBack: appInit.allowPlayOnBack,
       autoLrc: appInit.autoLrc,
       theme: appInit.theme || 1,
       musicPath: appInit.musicPath
@@ -58,7 +58,9 @@ export default Anot({
 
       Object.assign(appInit, setting)
 
-      fs.echo(JSON.stringify(appInit, '', 2), APP_INI_PATH)
+      let cache = JSON.stringify(appInit, '', 2)
+      fs.echo(cache, APP_INI_PATH)
+      Anot.ss('app-init', cache)
 
       layer.toast('保存成功')
     }

@@ -22,7 +22,18 @@
   </nav>
 
   <nav class="menubar-win do-fn-nodrag">
-    <i class="item opt do-icon-menu-right" :click="toggleModule('profile')"></i>
+    <div class="opt">
+      <i class="do-icon-menu-right" :click="toggleOptBox"></i>
+      <section class="opt-list" :visible="optBoxShow">
+        <span><i class="do-icon-maximized"></i> 迷你模式</span>
+        <span :click="toggleModule('profile')">
+          <i class="do-icon-setting"></i> 首选项
+        </span>
+        <span class="pipe"></span>
+        <span :click="quit(true)"><i class="do-icon-logout"></i> 退出</span>
+      </section>
+    </div>
+    
     <span :if="theme === 2">
       <i class="item do-icon-minimize" :click="minimize"></i>
       <i class="item do-icon-maximize" :click="maximize"></i>

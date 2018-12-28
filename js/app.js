@@ -19,15 +19,12 @@ const log = console.log
 
 const fs = require('iofs')
 const path = require('path')
-const crypto = require('crypto.js')
-const { exec } = require('child_process')
-const {
-  remote: { app }
-} = require('electron')
 
-const HOME_PATH = app.getPath('appData')
+const { remote } = require('electron')
+
+const WIN = remote.getCurrentWindow()
+const HOME_PATH = remote.app.getPath('appData')
 const APP_INI_PATH = path.join(HOME_PATH, 'app.ini')
-const MUSIC_DB_PATH = path.join(HOME_PATH, 'music.db')
 const PLAY_MODE = {
   0: 'all',
   1: 'single',
@@ -43,55 +40,20 @@ window.TS = store.collection('temp')
 window.SONIST = new AudioPlayer()
 
 let appInit = fs.cat(APP_INI_PATH)
-let dbCache = fs.cat(MUSIC_DB_PATH)
 
-dbCache = JSON.parse(dbCache)
+Anot.ss('app-init', appInit + '')
+
 appInit = JSON.parse(appInit)
-LS.insert(dbCache)
-
-dbCache = null
-
-let list = fs.ls('/Volumes/extends/music')
-
-let hasNew = false
-// list.forEach(it => {
-//   let name = path.basename(it)
-//   if (name.startsWith('.')) {
-//     return
-//   }
-//   let hash = crypto.md5Sign(it)
-//   if (LS.get(hash)) {
-//     return
-//   }
-//   hasNew = true
-//   AudioPlayer.ID3(it).then(tag => {
-//     LS.insert({
-//       id: hash,
-//       title: tag.title,
-//       album: tag.album,
-//       artist: tag.artist,
-//       path: `file://${it}`,
-//       duration: tag.duration
-//     })
-//   })
-// })
-
-if (hasNew) {
-  setTimeout(() => {
-    dbCache = JSON.stringify(LS.getAll(), '', 2)
-    log(dbCache, MUSIC_DB_PATH)
-    fs.echo(dbCache, MUSIC_DB_PATH)
-  }, 500)
-}
 
 Anot({
   $id: 'app',
   state: {
     theme: 1, // 1:macos, 2: deepin
-    winFocus: true,
+    winFocus: false,
     mod: 'local',
     playMode: Anot.ls('play-mode') >>> 0, // 0:all | 1:single |  2:random
     isPlaying: false,
+    optBoxShow: false,
     curr: {
       id: '',
       index: 0,
@@ -103,8 +65,7 @@ Anot({
     },
 
     currTimeBar: '',
-    currTimeBarPercent: 0,
-    __DEG__: 0.01
+    currTimeBarPercent: 0
   },
   skip: [],
   computed: {
@@ -138,6 +99,8 @@ Anot({
     canvas.height = this.__HEIGHT__
     this.__CTX__ = canvas.getContext('2d')
 
+    this.draw()
+
     // 修改歌曲进度
     canvas.addEventListener(
       'click',
@@ -170,9 +133,26 @@ Anot({
     })
 
     this.activeModule(this.mod)
+
+    remote.app.on('browser-window-focus', _ => {
+      this.winFocus = true
+    })
+    remote.app.on('browser-window-blur', _ => {
+      this.winFocus = false
+    })
   },
   methods: {
-    quit() {},
+    quit(force) {
+      if (force) {
+        remote.app.exit()
+      } else {
+        if (appInit.allowPlayOnBack) {
+          WIN.hide()
+        } else {
+          remote.app.exit()
+        }
+      }
+    },
     minimize() {},
     maximize() {},
 
@@ -191,10 +171,15 @@ Anot({
           break
       }
     },
+
+    toggleOptBox() {
+      this.optBoxShow = !this.optBoxShow
+    },
     toggleModule(mod) {
       if (['radio', 'mv'].includes(mod)) {
         return
       }
+      this.optBoxShow = false
       this.mod = mod
     },
     togglePlayMode() {
@@ -281,6 +266,7 @@ Anot({
 
       Promise.all([p1.promise, p2.promise]).then(_ => {
         clearInterval(this.timer)
+        this.__DEG__ = 0.01
         if (play) {
           this.timer = setInterval(() => {
             draw(img1, img2, play, rx, ry)

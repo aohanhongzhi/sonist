@@ -40,35 +40,6 @@ class AudioPlayer {
     )
   }
 
-  static ID3(song) {
-    let cmd = `ffprobe -v quiet -print_format json -show_entries format "${song}"`
-    let pc = exec(cmd)
-    let buf = []
-    return new Promise((resolve, reject) => {
-      pc.stdout.on('data', _ => {
-        buf.push(_)
-      })
-
-      pc.stderr.on('data', reject)
-
-      pc.stdout.on('close', _ => {
-        let { format } = Buffer.from(buf)
-        try {
-          res = JSON.parse(res)
-          resolve({
-            title: format.tags.TITLE || format.tags.title,
-            album: format.tags.ALBUM || format.tags.album,
-            artist: format.tags.ARTIST || format.tags.artist,
-            duration: +format.duration,
-            size: +(format.size / 1024 / 1024).toFixed(2)
-          })
-        } catch (err) {
-          reject(err)
-        }
-      })
-    })
-  }
-
   get stat() {
     return this.__LIST__.length ? 'ready' : 'stop'
   }
@@ -158,6 +129,7 @@ class AudioPlayer {
         this.__PLAYER__.src = song.path
         this.__PLAYER__.play()
 
+        Anot.ls('last-play', id)
         return Promise.resolve(song)
       }
       return Promise.reject('song not found')
@@ -200,5 +172,34 @@ class AudioPlayer {
 }
 
 util.inherits(AudioPlayer, EventEmitter)
+
+export const ID3 = song => {
+  let cmd = `ffprobe -v quiet -print_format json -show_entries format "${song}"`
+  let pc = exec(cmd)
+  let buf = []
+  return new Promise((resolve, reject) => {
+    pc.stdout.on('data', _ => {
+      buf.push(_)
+    })
+
+    pc.stderr.on('data', reject)
+
+    pc.stdout.on('close', _ => {
+      let { format } = Buffer.from(buf)
+      try {
+        res = JSON.parse(res)
+        resolve({
+          title: format.tags.TITLE || format.tags.title,
+          album: format.tags.ALBUM || format.tags.album,
+          artist: format.tags.ARTIST || format.tags.artist,
+          duration: +format.duration,
+          size: +(format.size / 1024 / 1024).toFixed(2)
+        })
+      } catch (err) {
+        reject(err)
+      }
+    })
+  })
+}
 
 export default AudioPlayer

@@ -76,7 +76,11 @@
     
   .toolbar {flex:0 1  3rem;padding:0 1rem;line-height:2.9rem;border-bottom:.1rem solid nth($cp, 2);
   
-    .refresh {margin-left:1rem;color:nth($ct, 1);text-decoration:underline;}
+    .refresh {margin-left:1rem;color:nth($ct, 1);text-decoration:underline;
+      
+      &:hover {color:nth($cp, 3)}
+      &:active {color:nth($ct, 1);transform:scale(1.1)}
+    }
   }
 
   .table {overflow:auto;flex:1;
@@ -84,7 +88,7 @@
     .stat {width:2.6rem;height:2.6rem;line-height:2.6rem;}
     .ac {text-align:center}
 
-    .active {color:nth($ct, 1);
+    .active {color:nth($ct, 1);background:nth($cp, 1);
       
       i {animation: play 2s infinite linear;}
     }

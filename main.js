@@ -1,4 +1,4 @@
-const { app, BrowserWindow, protocol } = require('electron')
+const { app, BrowserWindow, protocol, Tray } = require('electron')
 const path = require('path')
 const fs = require('iofs')
 const log = console.log
@@ -16,6 +16,7 @@ const MIME_TYPES = {
 }
 
 let win = null
+let tray = null
 
 function createWindow() {
   // 创建浏览器窗口
@@ -53,6 +54,14 @@ app.on('ready', () => {
     let buf = fs.cat(path.resolve(ROOT, file))
     cb({ data: buf, mimeType: MIME_TYPES[ext] })
   })
+
+  tray = new Tray('./images/trays/trayTemplate.png')
+
+  tray.on('click', _ => {
+    win.show()
+  })
+
   createWindow()
+  win.tray = tray
   win.webContents.openDevTools()
 })
