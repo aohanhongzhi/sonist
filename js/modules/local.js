@@ -44,17 +44,9 @@ export default Anot({
     dbCache = null
     this.__APP__ = Anot.vmodels.app
     this.list = LS.getAll()
-    let lastPlay = Anot.ls('last-play') || 0
 
     SONIST.clear()
     SONIST.push(LS.getAll())
-
-    // if (appInit.autoPlay) {
-    //   SONIST.play(lastPlay).then(it => {
-    //     this.__APP__.play(it)
-    //     this.curr = it.id
-    //   })
-    // }
   },
   watch: {
     'props.curr'(v) {

@@ -348,10 +348,19 @@ Anot({
         this.isPlaying = true
       } else {
         if (SONIST.stat === 'ready') {
-          if (this.isPlaying) {
-            SONIST.pause()
+          if (this.curr.id) {
+            if (this.isPlaying) {
+              SONIST.pause()
+            } else {
+              SONIST.play()
+            }
           } else {
-            SONIST.play()
+            let lastPlay = Anot.ls('last-play') || 0
+            SONIST.play(lastPlay).then(it => {
+              it.time = 0
+              this.updateCurr(it)
+              this.draw()
+            })
           }
           this.isPlaying = !this.isPlaying
         }
