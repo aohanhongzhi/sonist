@@ -34,25 +34,27 @@
 .do-fn-nodrag {-webkit-app-region:no-drag;}
 
 html {font-size:62.5%}
-body {line-height:1.5;background:#fff;font-size:1.4rem;color:nth($cd, 1)}
+body {position:fixed;left:0;top:0;display:flex;width:100%;height:100%;line-height:1.5;background:#fff;font-size:1.4rem;color:nth($cd, 1);background-size:cover;background-repeat:no-repeat;}
 
 table {overflow:auto;display:table;width:100%;line-height:2.5rem;
-  thead tr {height:4.5rem;border-bottom:.1rem solid nth($cp, 1)}
+  thead tr {height:4.5rem;border-bottom:.1rem solid rgba(200, 200, 200, .15)}
   thead th {padding:1rem .8rem;border:0;}
   tbody tr {height:auto;@include ts(background, .3s);
-    &:hover {background:#f7f8fb;}
+    &:hover {background:rgba(63, 194, 168, .08);}
   }
   tbody td {padding:.9rem .8rem}
 }
 
-::-webkit-scrollbar {width:8px;height:8px;background:#f7f8fb;}
+::-webkit-scrollbar {width:8px;height:8px;background:none;}
 ::-webkit-scrollbar:hover {background:#f3f5fb;}
 ::-webkit-scrollbar-button {display:none;}
 ::-webkit-scrollbar-thumb {background:nth($cp, 3);}
 ::-webkit-scrollbar-thumb:hover {background:nth($ct, 1);}
 
 
-.do-mod-app {display:flex;position:fixed;left:0;top:0;width:100%;height:100%;
+.do-mod-app {display:flex;width:100%;height:100%;background:#fff;
+
+  
 
 
   .menubar {position:absolute;left:1.2rem;top:0;z-index:99;width:auto;height:3rem;padding:.9rem 0;
@@ -131,6 +133,8 @@ table {overflow:auto;display:table;width:100%;line-height:2.5rem;
   }
 
 
+
+
   // 主体样式
   .main {flex:1;display:flex;flex-flow:column wrap;
   
@@ -174,7 +178,18 @@ table {overflow:auto;display:table;width:100%;line-height:2.5rem;
   }
 
 
+  &.blur  {background:rgba(255, 255, 255, .85);backdrop-filter:blur(1rem);
+  
+    .sidebar {background:rgba(255, 255, 255, .3);
+    
+      .play-contrl  {background:transparent}
+    }
 
+    .main {
+      .play-bar {background:rgba(255, 255, 255, .35)}
+    }
+  
+  }
 
 
 }
