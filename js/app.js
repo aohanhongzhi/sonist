@@ -120,21 +120,26 @@ Anot({
     canvas.addEventListener(
       'click',
       ev => {
+        if (!this.curr.id) {
+          return
+        }
         let rect = canvas.getBoundingClientRect()
         let aw = rect.width
         let ax = ev.pageX - rect.left
         let ay = ev.pageY - rect.top
 
         log(aw, ax, ay)
-        if (ax < 80 && this.curr.id) {
+        if (ax < 80) {
           this.ktvMode = this.ktvMode ^ 1
           return
         }
         if (ax > 124 && ay > 55 && ay < 64) {
           let pp = (ax - 124) / (aw - 124)
           this.curr.time = pp * this.curr.duration
-          log(pp, this.curr.time)
           SONIST.seek(this.curr.time)
+          if (!this.isPlaying) {
+            this.draw()
+          }
         }
       },
       true

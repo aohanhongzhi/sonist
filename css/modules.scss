@@ -78,7 +78,7 @@
   
     .refresh {margin-left:1rem;color:nth($ct, 1);text-decoration:underline;
       
-      &:hover {color:nth($cp, 3)}
+      &:hover {color:nth($co, 1)}
       &:active {color:nth($ct, 1);transform:scale(1.1)}
     }
   }

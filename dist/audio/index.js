@@ -165,9 +165,7 @@ class AudioPlayer {
     if (this.__CURR__ < 0) {
       return
     }
-    this.__PLAYER__.pause()
     this.__PLAYER__.currentTime = time
-    this.__PLAYER__.play()
   }
 }
 
