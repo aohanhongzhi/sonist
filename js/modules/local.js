@@ -181,10 +181,12 @@ export default Anot({
       }
       if (appInit.musicPath) {
         this.__load__ = layer.load(4)
-        this.__LIST__ = fs.ls('/Volumes/extends/music')
+        this.__LIST__ = fs.ls(appInit.musicPath)
         this.__NEW_NUM__ = 0
         ev.target.textContent = '正在扫描, 请稍候...'
         this.__checkSong__(ev.target)
+      } else {
+        layer.toast('请先设置音乐目录', 'error')
       }
     },
     closeEdit() {
