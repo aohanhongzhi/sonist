@@ -31,6 +31,21 @@ const PLAY_MODE = {
   1: 'single',
   2: 'random'
 }
+const COLORS = [
+  {
+    title: '#62778d',
+    lrc: '#98acae',
+    bar1: '#dae1e9',
+    bar2: '#3fc2a7'
+  },
+  {
+    title: '#fff',
+    lrc: '#d7d8db',
+    bar1: '#454545',
+    bar2: '#fff'
+  }
+]
+
 const FONTS_NAME =
   ' Helvetica, Arial,"WenQuanYi Micro Hei","PingFang SC","Hiragino Sans GB","Segoe UI", "Microsoft Yahei", sans-serif'
 
@@ -53,6 +68,7 @@ Anot({
     winFocus: false,
     mod: 'local',
     playMode: Anot.ls('play-mode') >>> 0, // 0:all | 1:single |  2:random
+    ktvMode: 0,
     isPlaying: false,
     optBoxShow: false,
     volumeCtrlShow: false,
@@ -73,6 +89,13 @@ Anot({
         return
       }
       return '/views/' + this.mod + '.htm'
+    },
+    coverBG() {
+      if (this.curr.cover) {
+        return `url(${this.curr.cover})`
+      } else {
+        return 'none'
+      }
     }
   },
   watch: {
@@ -103,6 +126,10 @@ Anot({
         let ay = ev.pageY - rect.top
 
         log(aw, ax, ay)
+        if (ax < 80 && this.curr.id) {
+          this.ktvMode = this.ktvMode ^ 1
+          return
+        }
         if (ax > 124 && ay > 55 && ay < 64) {
           let pp = (ax - 124) / (aw - 124)
           this.curr.time = pp * this.curr.duration
@@ -217,6 +244,7 @@ Anot({
       let ry = this.__HEIGHT__ / 2 // 旋转唱片的圆心坐标Y
       let pw = this.__WIDTH__ - this.__HEIGHT__ - 180 // 进度条总长度
       let wl = this.__HEIGHT__ + 180 // 文字的坐标X
+
       const draw = () => {
         let { time, duration } = this.curr
         let pp = time / duration // 进度百分比
@@ -244,12 +272,12 @@ Anot({
         this.__CTX__.drawImage(img2, 0, 0, this.__HEIGHT__, this.__HEIGHT__)
 
         // 歌曲标题和歌手
-        this.__CTX__.fillStyle = '#62778d'
+        this.__CTX__.fillStyle = COLORS[this.ktvMode].title
         this.__CTX__.font = '56px' + FONTS_NAME
         this.__CTX__.fillText(`${title} - ${artist}`, wl, 100)
 
         // 时间
-        this.__CTX__.fillStyle = '#98acae'
+        this.__CTX__.fillStyle = COLORS[this.ktvMode].lrc
         this.__CTX__.font = '48px' + FONTS_NAME
         this.__CTX__.fillText(
           `${time} / ${duration}`,
@@ -258,14 +286,14 @@ Anot({
         )
 
         // 歌词
-        this.__CTX__.fillStyle = '#98acae'
+        this.__CTX__.fillStyle = COLORS[this.ktvMode].lrc
         this.__CTX__.font = '48px' + FONTS_NAME
         this.__CTX__.fillText(`暂无歌词...`, wl, 180)
 
         // 进度条
-        this.__CTX__.fillStyle = '#dae1e9'
+        this.__CTX__.fillStyle = COLORS[this.ktvMode].bar1
         this.__CTX__.fillRect(wl, 230, pw, 16)
-        this.__CTX__.fillStyle = '#3fc2a7'
+        this.__CTX__.fillStyle = COLORS[this.ktvMode].bar2
         this.__CTX__.fillRect(wl, 230, pw * pp, 16)
 
         this.__DEG__ += 0.01

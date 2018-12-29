@@ -23,7 +23,7 @@ function createWindow() {
   win = new BrowserWindow({
     title: 'sonist',
     width: 1024,
-    height: 600,
+    height: 640,
     frame: false,
     resizable: false,
     webPreferences: {

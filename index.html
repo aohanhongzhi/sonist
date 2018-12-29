@@ -11,79 +11,126 @@
 <script>window.LIBS_BASE_URL = location.origin + '/dist';window.__ENV_LANG__ = 'zh'</script>
 <script type="module" src="js/app.js"></script>
 </head>
-<body class="do-fn-noselect" anot="app" :css="{'background-image':'url(' + curr.cover + ')'}">
+<body class="do-fn-noselect" anot="app" :css="{'background-image': coverBG}">
 
-<div class="do-mod-app" :class="{blur: isPlaying}">
+<div class="do-mod-app" :class="{blur: isPlaying  && !ktvMode, ktv: ktvMode}">
 
-  <nav class="menubar do-fn-nodrag" :if="theme === 1" :class="{focus: winFocus}">
-    <i class="item quit" :click="quit(false)"></i>
-    <i class="item min" :click="minimize"></i>
-    <i class="item max" :click="maximize"></i>
-  </nav>
+  <div class="title-bar do-fn-drag">
 
-  <nav class="menubar-win do-fn-nodrag">
-    <div class="opt">
-      <i class="do-icon-menu-right" :click="toggleOptBox"></i>
-      <section class="opt-list" :visible="optBoxShow">
-        <span><i class="do-icon-maximized"></i> 迷你模式</span>
-        <span :click="toggleModule('profile')">
-          <i class="do-icon-setting"></i> 首选项
-        </span>
-        <span class="pipe"></span>
-        <span :click="quit(true)"><i class="do-icon-logout"></i> 退出</span>
-      </section>
-    </div>
-    
-    <span :if="theme === 2">
-      <i class="item do-icon-minimize" :click="minimize"></i>
-      <i class="item do-icon-maximize" :click="maximize"></i>
-      <i class="item do-icon-close" :click="quit(false)"></i>
-    </span>
-  </nav>
+    <nav class="btn-box do-fn-nodrag" :if="theme === 1" :class="{focus: winFocus}">
+      <i class="item quit" :click="quit(false)"></i>
+      <i class="item min" :click="minimize"></i>
+      <i class="item max" :click="maximize"></i>
+    </nav>
 
 
-
-  <aside class="sidebar do-fn-drag">
-  
-    <div class="user-box">
-      <div class="avatar">
-        <img src="/images/avatar.jpg" alt="yutent">
+    <!-- 背景点位标签 -->
+    <div class="holder"></div>
+    <div class="tools do-fn-drag">
+      <div class="search do-fn-nodrag">
+        <input class="do-ui-input" placeholder="搜索 音乐/歌手/专辑" value="">
+        <i class="icon do-icon-search"></i>
       </div>
-      <h2 class="uname">yutent</h2>
     </div>
 
-    <dl class="music-box">
-      <dt class="title">酷狗在线</dt>
-      <dd class="item" 
-        :click="toggleModule('rank')"
-        :class="{active: mod === 'rank'}">
-        <i class="s-icon-rank"></i> 排行榜
-      </dd>
-      <dd class="item" 
-        :click="toggleModule('artist')"
-        :class="{active: mod === 'artist'}">
-        <i class="s-icon-singer"></i> 歌手
-      </dd>
-      <dd class="item disabled" 
-        :click="toggleModule('mv')"
-        :class="{active: mod === 'mv'}">
-        <i class="s-icon-mv"></i> MV
-      </dd>
 
-      <dt class="title">我的音乐</dt>
-      <dd class="item" 
-        :click="toggleModule('search')"
-        :class="{active: mod === 'search'}">
-        <i class="s-icon-heart"></i> 试听列表
-      </dd>
-      <dd class="item" 
-        :click="toggleModule('local')"
-        :class="{active: mod === 'local'}">
-        <i class="s-icon-play-list"></i> 本地音乐
-      </dd>
-    </dl>
+    <nav class="btn-box-win do-fn-nodrag">
+      <div class="opt">
+        <i class="do-icon-menu-right" :click="toggleOptBox"></i>
+        <section class="opt-list" :visible="optBoxShow">
+          <span><i class="do-icon-maximized"></i> 迷你模式</span>
+          <span :click="toggleModule('profile')">
+            <i class="do-icon-setting"></i> 首选项
+          </span>
+          <span class="pipe"></span>
+          <span :click="quit(true)"><i class="do-icon-logout"></i> 退出</span>
+        </section>
+      </div>
+      <span :if="theme === 2">
+        <i class="item do-icon-minimize" :click="minimize"></i>
+        <i class="item do-icon-maximize" :click="maximize"></i>
+        <i class="item do-icon-close" :click="quit(false)"></i>
+      </span>
+    </nav>
+  </div>
 
-    <div class="play-contrl">
+  
+
+  <div class="main-body">
+
+    <aside class="sidebar do-fn-drag">
+    
+      <div class="user-box">
+        <div class="avatar">
+          <img src="/images/avatar.jpg" alt="yutent">
+        </div>
+        <h2 class="uname">yutent</h2>
+      </div>
+
+      <dl class="music-box">
+        <dt class="title">酷狗在线</dt>
+        <dd class="item" 
+          :click="toggleModule('rank')"
+          :class="{active: mod === 'rank'}">
+          <i class="s-icon-rank"></i> 排行榜
+        </dd>
+        <dd class="item" 
+          :click="toggleModule('artist')"
+          :class="{active: mod === 'artist'}">
+          <i class="s-icon-singer"></i> 歌手
+        </dd>
+        <dd class="item disabled" 
+          :click="toggleModule('mv')"
+          :class="{active: mod === 'mv'}">
+          <i class="s-icon-mv"></i> MV
+        </dd>
+
+        <dt class="title">我的音乐</dt>
+        <dd class="item" 
+          :click="toggleModule('search')"
+          :class="{active: mod === 'search'}">
+          <i class="s-icon-heart"></i> 试听列表
+        </dd>
+        <dd class="item" 
+          :click="toggleModule('local')"
+          :class="{active: mod === 'local'}">
+          <i class="s-icon-play-list"></i> 本地音乐
+        </dd>
+      </dl>
+
+    </aside>
+
+    <content class="module" :include="views" data-cache="true"></content>
+
+  </div>
+
+
+
+  <div 
+    class="ktv-box" 
+    :if="ktvMode" 
+    :css="{'background-image': coverBG}">
+
+    <div class="inner-content">
+      <div class="info">
+        <img :attr-src="curr.cover" />
+
+        <h3 :text="curr.title"></h3>
+        <section>歌手: {{curr.artist}}</section>
+        <section>专辑: {{curr.album}}</section>
+      </div>
+
+      <div class="lrc-box">
+        
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="contrl-bar">
+
+    <div class="play-box">
       <span class="item prev s-icon-prev" :click="nextSong(-1)"></span>
       <span 
         class="item play"
@@ -93,26 +140,7 @@
       <span class="item next s-icon-next" :click="nextSong(1)"></span>
     </div>
 
-  </aside>
-
-
-  <div class="main">
-
-    <div class="tool-bar do-fn-drag">
-      <div class="search do-fn-nodrag">
-        <input class="do-ui-input" value="">
-        <i class="icon do-icon-search"></i>
-      </div>
-    </div>
-
-    
-
-    <content class="module" :include="views" data-cache="true"></content>
-
-      
-
-
-    <div class="play-bar">
+    <div class="stat-box">
       <div class="song-stat">
         <canvas ref="player"></canvas>
       </div>
