@@ -48,7 +48,7 @@ export default Anot({
     SONIST.clear()
     SONIST.push(LS.getAll())
 
-    this.__APP__.play()
+    // this.__APP__.play()
   },
   watch: {
     'props.curr'(v) {

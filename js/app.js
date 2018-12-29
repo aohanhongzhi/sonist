@@ -364,7 +364,7 @@ Anot({
               it.time = 0
               this.updateCurr(it)
               this.draw()
-              this.ktvMode = 1
+              // this.ktvMode = 1
             })
           }
           this.isPlaying = !this.isPlaying
