@@ -111,7 +111,7 @@ export default Anot({
               SONIST.push(LS.getAll())
 
               this.__APP__.updateCurr(it)
-              this.__APP__.draw()
+              this.__APP__.draw(true)
 
               fs.echo(json.lyrics, it.lyrics)
               fs.echo(JSON.stringify(LS.getAll(), '', 2), MUSIC_DB_PATH)

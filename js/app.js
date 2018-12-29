@@ -114,7 +114,7 @@ Anot({
     canvas.height = this.__HEIGHT__
     this.__CTX__ = canvas.getContext('2d')
 
-    this.draw()
+    this.draw(true)
 
     // 修改歌曲进度
     canvas.addEventListener(
@@ -231,89 +231,102 @@ Anot({
       Anot.ls('volume', volume)
     },
 
-    draw() {
-      let img1 = new Image()
-      let img2 = new Image()
-      let p1 = Promise.defer()
-      let p2 = Promise.defer()
-      let { title, artist, cover } = this.curr
+    __draw__() {
       let play = this.isPlaying
-
-      img1.onload = p1.resolve
-      img2.onload = p2.resolve
-      img1.src = '/images/disk.png'
-      img2.src = cover || '/images/album.png'
-
       let rx = (play ? 112 : 40) + this.__HEIGHT__ / 2 // 旋转唱片的圆心坐标X
       let ry = this.__HEIGHT__ / 2 // 旋转唱片的圆心坐标Y
       let pw = this.__WIDTH__ - this.__HEIGHT__ - 180 // 进度条总长度
       let wl = this.__HEIGHT__ + 180 // 文字的坐标X
 
-      const draw = () => {
-        let { time, duration } = this.curr
-        let pp = time / duration // 进度百分比
-        time = Anot.filters.time(time)
-        duration = Anot.filters.time(duration)
+      let { time, duration, title, artist } = this.curr
+      let pp = time / duration // 进度百分比
+      time = Anot.filters.time(time)
+      duration = Anot.filters.time(duration)
 
-        this.__CTX__.clearRect(0, 0, this.__WIDTH__, this.__HEIGHT__)
-        this.__CTX__.save()
+      this.__CTX__.clearRect(0, 0, this.__WIDTH__, this.__HEIGHT__)
+      this.__CTX__.save()
 
-        // 将原点移到唱片圆心, 旋转完再回到初始值
-        this.__CTX__.translate(rx, ry)
-        this.__CTX__.rotate(this.__DEG__ * Math.PI)
-        this.__CTX__.translate(-rx, -ry)
+      // 将原点移到唱片圆心, 旋转完再回到初始值
+      this.__CTX__.translate(rx, ry)
+      this.__CTX__.rotate(this.__DEG__ * Math.PI)
+      this.__CTX__.translate(-rx, -ry)
 
-        this.__CTX__.drawImage(
-          img1,
-          play ? 112 : 40,
-          0,
-          this.__HEIGHT__,
-          this.__HEIGHT__
-        )
+      this.__CTX__.drawImage(
+        this.__img1__,
+        play ? 112 : 40,
+        0,
+        this.__HEIGHT__,
+        this.__HEIGHT__
+      )
 
-        this.__CTX__.restore()
+      this.__CTX__.restore()
 
-        this.__CTX__.drawImage(img2, 0, 0, this.__HEIGHT__, this.__HEIGHT__)
+      this.__CTX__.drawImage(
+        this.__img2__,
+        0,
+        0,
+        this.__HEIGHT__,
+        this.__HEIGHT__
+      )
 
-        // 歌曲标题和歌手
-        this.__CTX__.fillStyle = COLORS[this.ktvMode].title
-        this.__CTX__.font = '56px' + FONTS_NAME
-        this.__CTX__.fillText(`${title} - ${artist}`, wl, 100)
+      // 歌曲标题和歌手
+      this.__CTX__.fillStyle = COLORS[this.ktvMode].title
+      this.__CTX__.font = '56px' + FONTS_NAME
+      this.__CTX__.fillText(`${title} - ${artist}`, wl, 100)
 
-        // 时间
-        this.__CTX__.fillStyle = COLORS[this.ktvMode].lrc
-        this.__CTX__.font = '48px' + FONTS_NAME
-        this.__CTX__.fillText(
-          `${time} / ${duration}`,
-          this.__WIDTH__ - 280,
-          100
-        )
+      // 时间
+      this.__CTX__.fillStyle = COLORS[this.ktvMode].lrc
+      this.__CTX__.font = '48px' + FONTS_NAME
+      this.__CTX__.fillText(`${time} / ${duration}`, this.__WIDTH__ - 280, 100)
 
-        // 歌词
-        this.__CTX__.fillStyle = COLORS[this.ktvMode].lrc
-        this.__CTX__.font = '48px' + FONTS_NAME
-        this.__CTX__.fillText(`暂无歌词...`, wl, 180)
+      // 歌词
+      this.__CTX__.fillStyle = COLORS[this.ktvMode].lrc
+      this.__CTX__.font = '48px' + FONTS_NAME
+      this.__CTX__.fillText(`暂无歌词...`, wl, 180)
 
-        // 进度条
-        this.__CTX__.fillStyle = COLORS[this.ktvMode].bar1
-        this.__CTX__.fillRect(wl, 230, pw, 16)
-        this.__CTX__.fillStyle = COLORS[this.ktvMode].bar2
-        this.__CTX__.fillRect(wl, 230, pw * pp, 16)
+      // 进度条
+      this.__CTX__.fillStyle = COLORS[this.ktvMode].bar1
+      this.__CTX__.fillRect(wl, 230, pw, 16)
+      this.__CTX__.fillStyle = COLORS[this.ktvMode].bar2
+      this.__CTX__.fillRect(wl, 230, pw * pp, 16)
 
-        this.__DEG__ += 0.01
-      }
+      this.__DEG__ += 0.01
+    },
 
-      Promise.all([p1.promise, p2.promise]).then(_ => {
+    draw(force) {
+      if (force) {
+        this.__img1__ = new Image()
+        this.__img2__ = new Image()
+
+        let p1 = Promise.defer()
+        let p2 = Promise.defer()
+
+        this.__img1__.onload = p1.resolve
+        this.__img2__.onload = p2.resolve
+        this.__img1__.src = '/images/disk.png'
+        this.__img2__.src = this.curr.cover || '/images/album.png'
+
+        Promise.all([p1.promise, p2.promise]).then(_ => {
+          clearInterval(this.timer)
+          this.__DEG__ = 0.01
+          if (this.isPlaying) {
+            this.timer = setInterval(_ => {
+              this.__draw__()
+            }, 20)
+          } else {
+            this.__draw__()
+          }
+        })
+      } else {
         clearInterval(this.timer)
-        this.__DEG__ = 0.01
-        if (play) {
-          this.timer = setInterval(() => {
-            draw(img1, img2, play, rx, ry)
+        if (this.isPlaying) {
+          this.timer = setInterval(_ => {
+            this.__draw__()
           }, 20)
         } else {
-          draw(img1, img2, play, rx, ry)
+          this.__draw__()
         }
-      })
+      }
     },
 
     nextSong(step) {
@@ -350,27 +363,29 @@ Anot({
         song.time = 0
         this.updateCurr(song)
         this.isPlaying = true
+        this.draw(true)
       } else {
         if (SONIST.stat === 'ready') {
+          let played = this.isPlaying
+          this.isPlaying = !this.isPlaying
           if (this.curr.id) {
-            if (this.isPlaying) {
+            if (played) {
               SONIST.pause()
             } else {
               SONIST.play()
             }
+            this.draw()
           } else {
             let lastPlay = Anot.ls('last-play') || 0
             SONIST.play(lastPlay).then(it => {
               it.time = 0
               this.updateCurr(it)
-              this.draw()
+              this.draw(true)
               // this.ktvMode = 1
             })
           }
-          this.isPlaying = !this.isPlaying
         }
       }
-      this.draw()
     }
   }
 })
