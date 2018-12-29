@@ -114,14 +114,21 @@
     <div class="inner-content">
       <div class="info">
         <img :attr-src="curr.cover" />
-
-        <h3 :text="curr.title"></h3>
-        <section>歌手: {{curr.artist}}</section>
-        <section>专辑: {{curr.album}}</section>
+        <div class="summary">
+          <h3 :text="curr.title"></h3>
+          <section>歌手: {{curr.artist}}</section>
+          <section>专辑: {{curr.album}}</section>
+          <section>时长: {{curr.duration | time}}</section>
+        </div>
       </div>
 
       <div class="lrc-box">
-        
+        <section class="left">
+          <span>我有句话悄悄想对你说</span>
+        </section>
+        <section class="right">
+          <span>想着你成为我一种坏习惯</span>
+        </section>
       </div>
     </div>
   </div>

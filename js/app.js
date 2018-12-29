@@ -128,7 +128,6 @@ Anot({
         let ax = ev.pageX - rect.left
         let ay = ev.pageY - rect.top
 
-        log(aw, ax, ay)
         if (ax < 80) {
           this.ktvMode = this.ktvMode ^ 1
           return
@@ -142,7 +141,7 @@ Anot({
           }
         }
       },
-      true
+      false
     )
 
     // 设置循环模式
@@ -365,6 +364,7 @@ Anot({
               it.time = 0
               this.updateCurr(it)
               this.draw()
+              this.ktvMode = 1
             })
           }
           this.isPlaying = !this.isPlaying
