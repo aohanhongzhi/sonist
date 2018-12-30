@@ -190,19 +190,21 @@ export default Anot({
       Object.assign(song, {
         title: this.form.title,
         artist: this.form.artist,
-        album: this.form.album
+        album: this.form.album,
+        cover: '',
+        kgHash: ''
       })
 
       this.list.set(this.__idx__, song)
       delete this.__idx__
 
       let col = new Intl.Collator('zh')
-      this.list.sort((a, b) => {
-        return col.compare(a.artist, b.artist)
-      })
+      // this.list.sort((a, b) => {
+      //   return col.compare(a.artist, b.artist)
+      // })
 
       LS.update(song.id, song)
-      LS.sort('artist', true)
+      // LS.sort('artist', true)
 
       SONIST.clear()
       SONIST.push(LS.getAll())

@@ -9,6 +9,7 @@
 const { exec } = require('child_process')
 const { EventEmitter } = require('events')
 const util = require('util')
+const path = require('path')
 
 class AudioPlayer {
   constructor() {
@@ -185,10 +186,12 @@ export const ID3 = song => {
     pc.stdout.on('close', _ => {
       try {
         let { format } = JSON.parse(buf)
+        let name = path.basename(song)
+        format.tags = format.tags || {}
         resolve({
-          title: format.tags.TITLE || format.tags.title,
-          album: format.tags.ALBUM || format.tags.album,
-          artist: format.tags.ARTIST || format.tags.artist,
+          title: format.tags.TITLE || format.tags.title || name,
+          album: format.tags.ALBUM || format.tags.album || '',
+          artist: format.tags.ARTIST || format.tags.artist || '',
           duration: +format.duration,
           size: +(format.size / 1024 / 1024).toFixed(2)
         })
