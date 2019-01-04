@@ -7,7 +7,7 @@
 'use strict'
 
 import Api from '/js/api.js'
-import { ID3 } from '/dist/audio/index.js'
+import { ID3 } from '/lib/audio/index.js'
 
 const fs = require('iofs')
 const path = require('path')

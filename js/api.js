@@ -6,7 +6,7 @@
 
 'use strict'
 
-import request from '/dist/request/index.js'
+import request from '/lib/request/index.js'
 
 const log = console.log
 

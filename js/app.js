@@ -4,10 +4,10 @@
  * @date 2018/12/16 17:15:57
  */
 
-import '/dist/anot.next.js'
-import layer from '/dist/layer/index.js'
-import store from '/dist/store/index.js'
-import AudioPlayer from '/dist/audio/index.js'
+import '/lib/anot.next.js'
+import layer from '/lib/layer/index.js'
+import store from '/lib/store/index.js'
+import AudioPlayer from '/lib/audio/index.js'
 
 import Api from '/js/api.js'
 
@@ -219,7 +219,7 @@ Anot({
 
     // 修改音量
     changeValume(ev) {
-      let volume = 535 - ev.pageY
+      let volume = 575 - ev.pageY
       if (volume < 0) {
         volume = 0
       }

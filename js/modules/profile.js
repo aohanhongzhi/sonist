@@ -6,7 +6,7 @@
 
 'use strict'
 
-import '/dist/form/index.js'
+import '/lib/form/index.js'
 
 const fs = require('iofs')
 const path = require('path')
