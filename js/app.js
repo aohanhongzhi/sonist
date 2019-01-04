@@ -8,6 +8,7 @@ import '/lib/anot.next.js'
 import layer from '/lib/layer/index.js'
 import store from '/lib/store/index.js'
 import AudioPlayer from '/lib/audio/index.js'
+import Lyrics from '/lib/lyrics/index.js'
 
 import Api from '/js/api.js'
 
@@ -54,6 +55,7 @@ window.LS = store.collection('local')
 window.TS = store.collection('temp')
 //  音乐播放器
 window.SONIST = new AudioPlayer()
+window.LYRICS = new Lyrics()
 
 let appInit = fs.cat(APP_INI_PATH)
 
@@ -80,6 +82,11 @@ Anot({
       album: '',
       time: 0,
       duration: 0
+    },
+    ctrlLrc: '暂无歌词...',
+    lrc: {
+      l: { bg: '', txt: '' },
+      r: { bg: '', txt: '' }
     }
   },
   skip: [],
@@ -136,6 +143,7 @@ Anot({
           let pp = (ax - 124) / (aw - 124)
           this.curr.time = pp * this.curr.duration
           SONIST.seek(this.curr.time)
+          LYRICS.seek(this.curr.time)
           if (!this.isPlaying) {
             this.draw()
           }
@@ -150,10 +158,21 @@ Anot({
 
     SONIST.on('play', time => {
       this.curr.time = time
+      LYRICS.update(time)
     })
 
     SONIST.on('end', time => {
       this.nextSong(1)
+    })
+
+    // 控制条的单行歌词
+    LYRICS.on('ctrl-lrc', lrc => {
+      this.ctrlLrc = lrc
+    })
+
+    // ktv模式的歌词
+    LYRICS.on('ktv-lrc', lrc => {
+      this.lrc = lrc
     })
 
     this.activeModule(this.mod)
@@ -239,6 +258,7 @@ Anot({
       let wl = this.__HEIGHT__ + 180 // 文字的坐标X
 
       let { time, duration, title, artist } = this.curr
+      let lrc = this.ctrlLrc
       let pp = time / duration // 进度百分比
       time = Anot.filters.time(time)
       duration = Anot.filters.time(duration)
@@ -282,7 +302,7 @@ Anot({
       // 歌词
       this.__CTX__.fillStyle = COLORS[this.ktvMode].lrc
       this.__CTX__.font = '48px' + FONTS_NAME
-      this.__CTX__.fillText(`暂无歌词...`, wl, 180)
+      this.__CTX__.fillText(lrc, wl, 180)
 
       // 进度条
       this.__CTX__.fillStyle = COLORS[this.ktvMode].bar1
@@ -361,9 +381,11 @@ Anot({
       // 此时仅更新播放控制条的信息即可
       if (song) {
         song.time = 0
+        this.ctrlLrc = '暂无歌词...'
         this.updateCurr(song)
         this.isPlaying = true
         this.draw(true)
+        LYRICS.__init__(song.lyrics)
       } else {
         if (SONIST.stat === 'ready') {
           let played = this.isPlaying
@@ -379,9 +401,12 @@ Anot({
             let lastPlay = Anot.ls('last-play') || 0
             SONIST.play(lastPlay).then(it => {
               it.time = 0
+              this.ctrlLrc = '暂无歌词...'
               this.updateCurr(it)
               this.draw(true)
               // this.ktvMode = 1
+
+              LYRICS.__init__(it.lyrics)
             })
           }
         }

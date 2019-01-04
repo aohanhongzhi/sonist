@@ -223,11 +223,10 @@ table {overflow:auto;display:table;width:100%;line-height:2.5rem;
         
         section {flex:1;display:flex;
         
-          &.left {justify-content:flex-start;
-          
-            span {background: linear-gradient(to right, #ff0 25%, #fff 25%);;background-clip:text;color:transparent;}
-          }
+          &.left {justify-content:flex-start;}
           &.right {justify-content:flex-end}
+
+          span {background-clip:text!important;color:transparent;}
         }
       
       }
